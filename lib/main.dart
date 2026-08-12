@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_app/screens/home_screen.dart';
+import 'package:smart_app/router/app_router.dart';
 
 void main() {
   runApp(const MainApp());
@@ -10,12 +10,11 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Mis Peliculas',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      home: HomeScreen()
+      routerConfig: appRouter,
     );
   }
 }
-//flutter pub upgrade

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:smart_app/data/mock_movies.dart';
+import 'package:smart_app/router/app_router.dart';
 import 'package:smart_app/widgets/movie_card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -17,13 +19,13 @@ class HomeScreen extends StatelessWidget {
               // TITULO
               Row(
                 children: [
-                  Icon(Icons.favorite, color: Colors.red, size: 32),
-                  SizedBox(width: 12,),
-                  Text(
+                  const Icon(Icons.favorite, color: Colors.red, size: 32),
+                  const SizedBox(width: 12),
+                  const Text(
                     'Mis peliculas Favoritas',
                     style: TextStyle(
                       fontSize: 32,
-                      fontWeight: FontWeight.w400
+                      fontWeight: FontWeight.w400,
                     ),
                   )
                 ],
@@ -32,13 +34,13 @@ class HomeScreen extends StatelessWidget {
               //LISTADO DE PELICULAS
               Expanded(
                 child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4, // elementos que se mostraran en un grid de una fila con N elementos que uno defina
-                    mainAxisSpacing: 24, //espaciado entre cada elemento del grid
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    mainAxisSpacing: 24,
                     crossAxisSpacing: 24,
-                    childAspectRatio: 0.75 // efecto cuando se selecciona
+                    childAspectRatio: 0.75,
                   ),
-                  itemCount: mockMovies.length, 
+                  itemCount: mockMovies.length,
                   itemBuilder: (context, index) {
                     final movie = mockMovies[index];
 
@@ -46,16 +48,19 @@ class HomeScreen extends StatelessWidget {
                       movie: movie,
                       autofocus: index == 0,
                       onSelect: () {
-                        // TODO: navegar al detalle de la película
+                        context.goNamed(
+                          AppRoutes.movieDetail,
+                          extra: movie,
+                        );
                       },
                     );
-                  }
-                )
-              )
+                  },
+                ),
+              ),
             ],
           ),
-        )
-      )
+        ),
+      ),
     );
   }
 }
