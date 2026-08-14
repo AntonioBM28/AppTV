@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smart_app/models/movie.dart';
+import 'package:smart_app/router/app_router.dart';
 
 class MovieDetailScreen extends StatefulWidget {
   final Movie movie;
@@ -21,6 +22,9 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
   // Índice del botón actualmente enfocado (0=Ver ahora, 1=Favorito, 2=Volver)
   int _focusedButton = 0;
   final int _totalButtons = 3;
+
+  // FocusNode del KeyboardListener raíz
+  final FocusNode _keyboardFocusNode = FocusNode();
 
   final List<FocusNode> _focusNodes = List.generate(3, (_) => FocusNode());
 
@@ -47,6 +51,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
   @override
   void dispose() {
     _animController.dispose();
+    _keyboardFocusNode.dispose();
     for (final node in _focusNodes) {
       node.dispose();
     }
@@ -74,7 +79,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
       case LogicalKeyboardKey.escape:
       case LogicalKeyboardKey.backspace:
       case LogicalKeyboardKey.goBack:
-        context.pop();
+        context.goNamed(AppRoutes.home);
         return KeyEventResult.handled;
       default:
         return KeyEventResult.ignored;
@@ -86,7 +91,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
     final movie = widget.movie;
 
     return KeyboardListener(
-      focusNode: FocusNode()..requestFocus(),
+      focusNode: _keyboardFocusNode,
       onKeyEvent: _handleKey,
       child: Scaffold(
         backgroundColor: const Color(0xFF0A0A0F),
@@ -148,7 +153,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                         top: 32,
                         left: 32,
                         child: GestureDetector(
-                          onTap: () => context.pop(),
+                          onTap: () => context.goNamed(AppRoutes.home),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 10),
@@ -196,9 +201,9 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                 // ─── PANEL DERECHO — Info + botones ────────────────────────
                 Expanded(
                   flex: 5,
-                  child: Padding(
+                  child: SingleChildScrollView(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 60, vertical: 48),
+                        horizontal: 60, vertical: 32),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -293,7 +298,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                           isPrimary: false,
                           color: Colors.white38,
                           isFocused: _focusedButton == 2,
-                          onPressed: () => context.pop(),
+                          onPressed: () => context.goNamed(AppRoutes.home),
                         ),
                       ],
                     ),
@@ -447,7 +452,7 @@ class _ActionButtonState extends State<_ActionButton> {
                 : [],
           ),
           child: Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.max,
             children: [
               Icon(
                 widget.icon,
